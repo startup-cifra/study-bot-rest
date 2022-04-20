@@ -43,6 +43,7 @@ create table if not exists message
             primary key,
     tg_id integer references users(tg_id),
     chat_id integer references groups(chat_id),
+    body text,
     date timestamp not null
 );
 create table if not exists lesson
