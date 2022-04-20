@@ -6,7 +6,7 @@ from app.exceptions import BadRequest,NotFoundException,UserNotFoundException
 
 async def add_new_message(tg_id: int, chat_id: int,body: str,date: datetime) -> None:
     sql = """INSERT INTO message(tg_id,chat_id,body,date) VALUES ($1,$2,$3,$4);"""
-    if not await DB.execute(sql,tg_id,chat_id,body,date)
+    if not await DB.execute(sql,tg_id,chat_id,body,date):
         raise NotFoundException('Пользователь или группа не существует')
 
 async def get_group_messages(chat_id: int, start_date: datetime, end_date: datetime) -> list[Record]:

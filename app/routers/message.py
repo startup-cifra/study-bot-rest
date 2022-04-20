@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Path, Query
 from fastapi.responses import JSONResponse
 
@@ -14,7 +16,7 @@ async def add_message(message: Message):
         'details': 'Executed'
     })
 
-@message_queries.get('/message/group')
+@message_router.get('/message/group')
 async def get_group_messages(chat_id: int = Query(None, title='ID чата',gt=0),
                              start_date: datetime = Query(None, title='Начальная дата поиска'),
                              end_date: datetime = Query(None, title='Конечная дата поиска')):
@@ -24,7 +26,7 @@ async def get_group_messages(chat_id: int = Query(None, title='ID чата',gt=0
         'messages': messages
     })
 
-@message_queries.get('/message/group/user')
+@message_router.get('/message/group/user')
 async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID',gt=0),
                                      chat_id: int = Query(None, title='ID чата',gt=0),
                                      start_date: datetime = Query(None, title='Начальная дата поиска'),
@@ -35,14 +37,14 @@ async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID
         'messages':messages
     })
 
-@message_queries.get('/message/count/group')
+@message_router.get('/message/count/group')
 async def count_group_messages(chat_id: int = Query(None, title='ID чата',gt=0),
                              start_date: datetime = Query(None, title='Начальная дата поиска'),
                              end_date: datetime = Query(None, title='Конечная дата поиска')):
     number = await message_queries.count_group_messages(chat_id,start_date,end_date)
     return JSONResponse(status_code=status.HTTP_200_OK, content=number)
 
-@message_queries.get('/message/count/group/user')
+@message_router.get('/message/count/group/user')
 async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID',gt=0),
                                      chat_id: int = Query(None, title='ID чата',gt=0),
                                      start_date: datetime = Query(None, title='Начальная дата поиска'),
