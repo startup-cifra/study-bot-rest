@@ -1,7 +1,7 @@
 import logging
 
 import asyncpg 
-from asyncpg.exceptions import PostgresError, UniqueViolationError
+from asyncpg.exceptions import PostgresError, UniqueViolationError, ForeignKeyViolationError
 from asyncpg import Record
 
 from app.exceptions import InternalServerError
@@ -29,6 +29,8 @@ class DB:
             await DB.con.execute(sql,*args)
         except UniqueViolationError:
             return False
+        except ForeignKeyViolationError:
+            return False
         except PostgresError as error:
             raise InternalServerError(str(error)) from error
         return True
@@ -39,15 +41,30 @@ class DB:
             await DB.con.executemany(sql,*args)
         except UniqueViolationError:
             return False
+        except ForeignKeyViolationError:
+            return False
         except PostgresError as error:
             raise InternalServerError(str(error)) from error
         return True
+
+    @classmethod
+    async def fetch(cls,sql, *args) -> list[Record]:
+        try:
+            return await DB.con.fetch(sql,*args)
+        except UniqueViolationError:
+            return False
+        except ForeignKeyViolationError:
+            return False
+        except PostgresError as error:
+            raise InternalServerError(str(error)) from error
 
     @classmethod
     async def fetchrow(cls,sql, *args) -> Record:
         try:
             return await DB.con.fetchrow(sql,*args)
         except UniqueViolationError:
+            return False
+        except ForeignKeyViolationError:
             return False
         except PostgresError as error:
             raise InternalServerError(str(error)) from error
@@ -57,6 +74,8 @@ class DB:
         try:
             return await DB.con.fetchval(sql,*args)
         except UniqueViolationError:
+            return False
+        except ForeignKeyViolationError:
             return False
         except PostgresError as error:
             raise InternalServerError(str(error)) from error
