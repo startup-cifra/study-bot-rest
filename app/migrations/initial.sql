@@ -22,19 +22,25 @@ create table if not exists homework
     deadline timestamp,
     url text
 );
-create table if not exists user_hw
+create table if not exists users_hw
 (
     tg_id integer references users(tg_id),
     hw_id integer references homework(id) on delete cascade,
-    mark integer not null
+    mark integer not null,
+  	unique(tg_id,hw_id)
 );
 create table if not exists groups
 (
     chat_id integer
         constraint group_pk
             primary key,
-    tg_id integer references users(tg_id),
     name text
+);
+create table if not exists users_groups
+(
+	tg_id integer references users(tg_id),
+	chat_id integer references groups(chat_id),
+	unique(tg_id,chat_id)	
 );
 create table if not exists message
 (
@@ -43,6 +49,7 @@ create table if not exists message
             primary key,
     tg_id integer references users(tg_id),
     chat_id integer references groups(chat_id),
+    body text,
     date timestamp not null
 );
 create table if not exists lesson
@@ -56,8 +63,9 @@ create table if not exists lesson
     body text not null,
     data timestamp
 );
-create table if not exists user_lesson
+create table if not exists users_lesson
 (
     tg_id integer references users(tg_id),
-    lesson_id integer references lesson(id) on delete cascade
+    lesson_id integer references lesson(id) on delete cascade,
+    unique(tg_id,lesson_id)
 );
