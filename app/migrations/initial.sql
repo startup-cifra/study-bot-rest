@@ -59,6 +59,7 @@ create table if not exists lesson
             primary key,
     owner_id integer references users(tg_id),
     chat_id integer references groups(chat_id),
+    attedance integer,
     lesson_type lesson_types,
     body text not null,
     data timestamp

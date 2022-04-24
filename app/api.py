@@ -4,6 +4,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.migrations.db import DB
 from app.routers.message import message_router
+from app.routers.users import users_router
+from app.routers.lesson import lessons_router
+from app.routers.homework import homework_router
 from app.exceptions import CommonException, InternalServerError
 
 logger = logging.getLogger(__name__)
@@ -35,3 +38,6 @@ async def common_exception_handler(request: Request, exception: CommonException)
     
 
 app.include_router(message_router)
+app.include_router(users_router)
+app.include_router(lessons_router)
+app.include_router(homework_router)

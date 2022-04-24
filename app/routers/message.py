@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Path, Query, status
+from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse
 
 import app.queries.message as message_queries
