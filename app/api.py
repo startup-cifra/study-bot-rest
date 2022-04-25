@@ -18,24 +18,26 @@ app = FastAPI(title='Telegram Bot')
 async def startup() -> None:
     await DB.connect_db()
 
+
 @app.on_event('shutdown')
 async def shutdown() -> None:
     await DB.disconnect_db()
+
 
 @app.exception_handler(CommonException)
 async def common_exception_handler(request: Request, exception: CommonException):
     del request
     logger.error(exception.error)
-    if isinstance(exception,InternalServerError):
+    if isinstance(exception, InternalServerError):
         return JSONResponse(
             status_code=exception.code,
-            content={'details':'Internal server error'}
-        )        
+            content={'details': 'Internal server error'}
+        ) 
     return JSONResponse(
         status_code=exception.code,
         content={'details': exception.error}
     )
-    
+
 
 app.include_router(message_router)
 app.include_router(users_router)
