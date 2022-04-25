@@ -4,6 +4,8 @@ from asyncpg import Record
 from app.migrations.db import DB
 from app.exceptions import BadRequest,NotFoundException,UserNotFoundException
 
+# TODO: добавить пагинацию
+
 async def add_new_message(tg_id: int, chat_id: int,body: str,date: datetime) -> None:
     sql = """SELECT tg_id FROM users_groups WHERE tg_id = $1 AND chat_id = $2"""
     if not await DB.fetchval(sql,tg_id,chat_id):
