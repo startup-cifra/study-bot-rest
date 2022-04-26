@@ -24,11 +24,11 @@ async def get_user_groups(tg_id: int = Query(None, title='Telegram ID',gt=0)):
     })    
 
 @users_router.post('/user')
-async def add_user(student: UserStudent ) -> JSONResponse:
+async def add_user(student: UserStudent) -> JSONResponse:
     await add_user_sql(student)
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'details': 'Executed',
-    })   
+    })
 
 
 @users_router.get('/user/check')
@@ -37,3 +37,4 @@ async def check_role(name: str) -> JSONResponse:
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'Role_users': role,
     })
+
