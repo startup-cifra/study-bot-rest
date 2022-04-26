@@ -15,6 +15,217 @@ async def test_db():
     yield
 
 @pytest.mark.asyncio
+async def test_message_group(test_db):
+    with TestClient(app) as client:
+        args = {
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert result[0]['body'] == 'message1'
+        assert result[0]['tg_id'] == 123
+        assert result[1]['body'] == 'message2'
+        assert result[1]['tg_id'] == 123
+        assert result[2]['body'] == 'message3' 
+        assert result[2]['tg_id'] == 125
+        args = {
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now()-timedelta(days=1))
+        } 
+        response = client.get(f'/message/group/?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert result[0]['body'] == 'message2'
+        assert result[0]['tg_id'] == 123
+        args = {
+            'chat_id': 123,
+            'start_date': str(datetime.now()),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 0
+        args = {
+            'chat_id': 126,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 0
+        args = {
+            'chat_id': 124,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert result[0]['tg_id'] == 124
+        assert result[0]['body'] == 'message4'
+
+
+@pytest.mark.asyncio
+async def test_message_group_user(test_db):
+    with TestClient(app) as client:
+        args = {
+            'tg_id': 123,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/user?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 2
+        assert result[0]['body'] == 'message1'
+        assert result[1]['body'] == 'message2'
+        args = {
+            'tg_id': 124,
+            'chat_id': 124,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/user?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 1
+        assert result[0]['body'] == 'message4'
+
+        args = {
+            'tg_id': 123,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now()-timedelta(days=1))
+        } 
+        response = client.get(f'/message/group/user?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 1
+        assert result[0]['body'] == 'message2'
+        args = {
+            'tg_id': 126,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/user?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 0
+        args = {
+            'tg_id': 123,
+            'chat_id': 126,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/user?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        result = response.json()['messages']
+        assert len(result) == 0
+
+@pytest.mark.asyncio
+async def test_message_group_count(test_db):
+    with TestClient(app) as client:
+        args = {
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/count?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 3
+        args = {    
+            'chat_id': 123,
+            'start_date': str(datetime.now()),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/count?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 0
+        args = {
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now()-timedelta(days=1))
+        } 
+        response = client.get(f'/message/group/count?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 1
+        args = {
+            'chat_id': 126,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        } 
+        response = client.get(f'/message/group/count?chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 0
+
+@pytest.mark.asyncio
+async def test_message_group_user_count(test_db):
+    with TestClient(app) as client:
+        args = {
+            'tg_id': 123,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 2
+        args = {
+            'tg_id': 123,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now()-timedelta(days=1))
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 1
+        args = {
+            'tg_id': 124,
+            'chat_id': 124,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 1
+        args = {
+            'tg_id': 123,
+            'chat_id': 123,
+            'start_date': str(datetime.now()),
+            'end_date': str(datetime.now())
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 0
+        args = {
+            'tg_id': 126,
+            'chat_id': 123,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 0
+        args = {
+            'tg_id': 123,
+            'chat_id': 126,
+            'start_date': str(datetime.now()-timedelta(days=2)),
+            'end_date': str(datetime.now())
+        }
+        response = client.get(f'/message/group/user/count?tg_id={args["tg_id"]}&chat_id={args["chat_id"]}&start_date={args["start_date"]}&end_date={args["end_date"]}')
+        assert response.status_code == 200
+        assert response.json() == 0
+
+
+@pytest.mark.asyncio
 async def test_add(test_db):
     with TestClient(app) as client: 
         response = client.post('/message',json={
@@ -53,4 +264,3 @@ async def test_add(test_db):
         response = client.get(f'/message/group/count?chat_id={123}&start_date={str(datetime.now()-timedelta(days=2))}&end_date={str(datetime.now())}')
         assert response.status_code == 200
         assert response.json() == 4
-    
