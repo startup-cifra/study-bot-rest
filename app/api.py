@@ -32,7 +32,7 @@ async def common_exception_handler(request: Request, exception: CommonException)
         return JSONResponse(
             status_code=exception.code,
             content={'details': 'Internal server error'}
-        ) 
+        )
     return JSONResponse(
         status_code=exception.code,
         content={'details': exception.error}

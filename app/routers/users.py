@@ -16,12 +16,12 @@ async def add_admin(name: str) -> JSONResponse:
     })
 
 @users_router.get('/user/groups')
-async def get_user_groups(tg_id: int = Query(None, title='Telegram ID',gt=0)):
-    groups = await user_queries.get_user_groups(tg_id)
+async def get_groups(tg_id: int = Query(None, title='Telegram ID',gt=0)):
+    groups = await get_user_groups(tg_id)
     groups = format_records(groups)
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'groups': groups
-    })    
+    })
 
 @users_router.post('/user')
 async def add_user(student: UserStudent) -> JSONResponse:
@@ -37,4 +37,3 @@ async def check_role(name: str) -> JSONResponse:
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'Role_users': role,
     })
-

@@ -1,7 +1,7 @@
 from datetime import datetime
+from asyncpg import Record
 from app.migrations.db import DB
 from app.models import Homework
-from asyncpg import Record
 
 
 async def create_homework(homework: Homework) -> None:

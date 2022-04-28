@@ -28,7 +28,7 @@ async def lesson_attedance(date: str = Query(None, description="Дата фор�
 
 
 @lessons_router.get('/lessons/attedance')
-async def get_lesson_attedance(date: str = Query(None, description="Дата формата ГГ-ММ-ДД"), 
+async def get_lesson_attedance(date: str = Query(None, description="Дата формата ГГ-ММ-ДД"),
                                owner_id: int = Query(None, description="Id tutor")) -> JSONResponse:
     attedance = await get_les_attedance(date, owner_id)
     return JSONResponse(status_code=status.HTTP_200_OK, content={
@@ -46,11 +46,10 @@ async def lesson_get_for_users(chat_id: int) -> JSONResponse:
 
 
 @lessons_router.get('/lessons/tutor')
-async def lessons_for_tutor(date: str = Query(None, description="Откуда начинать формата ГГ-ММ-ДД"), 
+async def lessons_for_tutor(date: str = Query(None, description="Откуда начинать формата ГГ-ММ-ДД"),
                             owner_id: int = Query(None, description="Id tutor"),
                             chat_id: int = Query(None, description="Группа")) -> JSONResponse:
     lessons = format_records(await lessons_for_tutor(date, owner_id, chat_id))
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'Lessons': lessons,
     })
-
