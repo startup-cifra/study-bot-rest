@@ -40,18 +40,16 @@ async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID
         'messages': messages
     })
 
-
-@message_router.get('/message/count/group')
-async def count_group_messages(chat_id: int = Query(None, title='ID чата',gt=0),
+@message_router.get('/message/group/count')
+async def count_group_messages(chat_id: int = Query(None,title="ID чата",gt=0),
                                start_date: datetime = Query(None, title='Начальная дата поиска'),
                                end_date: datetime = Query(None, title='Конечная дата поиска')):
     number = await message_queries.count_group_messages(chat_id, start_date, end_date)
     return JSONResponse(status_code=status.HTTP_200_OK, content=number)
 
-
-@message_router.get('/message/count/group/user')
-async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID', gt=0),
-                                     chat_id: int = Query(None, title='ID чата', gt=0),
+@message_router.get('/message/group/user/count')
+async def count_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID',gt=0),
+                                     chat_id: int = Query(None, title='ID чата',gt=0),
                                      start_date: datetime = Query(None, title='Начальная дата поиска'),
                                      end_date: datetime = Query(None, title='Конечная дата поиска')):
     number = await message_queries.count_group_messages_by_user(tg_id, chat_id, start_date, end_date)

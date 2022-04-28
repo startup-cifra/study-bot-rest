@@ -1,7 +1,7 @@
 from datetime import datetime
+from asyncpg import Record
 from app.migrations.db import DB
 from app.models import Lessons
-from asyncpg import Record
 
 
 async def add_lesson_sql(lesson: Lessons) -> None:

@@ -1,6 +1,6 @@
 import logging
 
-import asyncpg 
+import asyncpg
 from asyncpg.exceptions import PostgresError, UniqueViolationError, ForeignKeyViolationError
 from asyncpg import Record
 
