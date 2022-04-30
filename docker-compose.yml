@@ -16,7 +16,7 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/hack
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
     depends_on:
       - db
     
