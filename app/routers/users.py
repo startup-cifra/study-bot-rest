@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse
-import app.models as models
+from app import models
 from app.utils import format_records
 from app.queries.users import add_admin_sql, add_user_sql, get_user_groups, check_role_sql
 

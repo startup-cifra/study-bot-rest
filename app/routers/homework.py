@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
-import app.models as models
+from app import models
 from app.queries.homework import check_deadline_for_group, check_homewroks, create_homework
 from app.utils import format_records
 

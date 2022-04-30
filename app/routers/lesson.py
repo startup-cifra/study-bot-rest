@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Query, status
-from fastapi.responses import JSONResponse
-import app.models as models
+from app import models
 from app.queries.lesson import add_lesson_sql, get_les_attedance, lesson_attedance_sql, lessons_for_users
 from app.utils import format_records
 

@@ -50,7 +50,7 @@ class LessonsOut(BaseModel):
     lesson_type: str = Field(None, title='Тип урока')
 
 class Homework(BaseModel):
-    owner_id: int = Field(None, 'ID создателя')
-    name: str = Field(None,'Имя домашней работы')
+    owner_id: int = Field(None, title='ID создателя')
+    name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
     url: str = Field(None,title='Ссылка на материалы')

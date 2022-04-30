@@ -12,7 +12,7 @@ async def get_user_groups(tg_id:int) -> list[Record]:
 async def add_admin_sql(name: str) -> None:
     sql = """UPDATE users
              SET role = 'tutor'
-             WHERE username = '$1' """
+             WHERE username = $1 """
     await DB.execute(sql, name)
 
 

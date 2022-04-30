@@ -1,10 +1,9 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Query, status
-from fastapi.responses import JSONResponse
 
 import app.queries.message as message_queries
-import app.models as models
+from app import models
 from app.utils import format_records
 
 message_router = APIRouter(tags=["Messages"])
