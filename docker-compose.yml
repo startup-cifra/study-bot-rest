@@ -1,4 +1,22 @@
-version: '3.7'
+version: '3.9'
 services:
-  main:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
     build: .
+    volumes:
+      - .:/code
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/hack
+    depends_on:
+      - db
+    
