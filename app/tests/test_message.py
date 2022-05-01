@@ -23,7 +23,7 @@ async def test_message_group(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert result[0]['body'] == 'message1'
         assert result[0]['tg_id'] == 123
         assert result[1]['body'] == 'message2'
@@ -39,7 +39,7 @@ async def test_message_group(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert result[0]['body'] == 'message2'
         assert result[0]['tg_id'] == 123
         args = {
@@ -51,7 +51,7 @@ async def test_message_group(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 0
         args = {
             'chat_id': 126,
@@ -62,7 +62,7 @@ async def test_message_group(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 0
         args = {
             'chat_id': 124,
@@ -73,7 +73,7 @@ async def test_message_group(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert result[0]['tg_id'] == 124
         assert result[0]['body'] == 'message4'
 
@@ -92,7 +92,7 @@ async def test_message_group_user(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 2
         assert result[0]['body'] == 'message1'
         assert result[1]['body'] == 'message2'
@@ -107,7 +107,7 @@ async def test_message_group_user(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 1
         assert result[0]['body'] == 'message4'
 
@@ -122,7 +122,7 @@ async def test_message_group_user(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 1
         assert result[0]['body'] == 'message2'
         args = {
@@ -136,7 +136,7 @@ async def test_message_group_user(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 0
         args = {
             'tg_id': 123,
@@ -149,7 +149,7 @@ async def test_message_group_user(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        result = response.json()['messages']
+        result = response.json()
         assert len(result) == 0
 
 @pytest.mark.asyncio
@@ -164,7 +164,7 @@ async def test_message_group_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 3
+        assert response.json()['count'] == 3
         args = {
             'chat_id': 123,
             'start_date': str(datetime.now()),
@@ -174,7 +174,7 @@ async def test_message_group_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 0
+        assert response.json()['count'] == 0
         args = {
             'chat_id': 123,
             'start_date': str(datetime.now()-timedelta(days=2)),
@@ -184,7 +184,7 @@ async def test_message_group_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 1
+        assert response.json()['count'] == 1
         args = {
             'chat_id': 126,
             'start_date': str(datetime.now()-timedelta(days=2)),
@@ -194,7 +194,7 @@ async def test_message_group_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 0
+        assert response.json()['count'] == 0
 
 @pytest.mark.asyncio
 async def test_message_group_user_count(test_db):
@@ -210,7 +210,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 2
+        assert response.json()['count'] == 2
         args = {
             'tg_id': 123,
             'chat_id': 123,
@@ -222,7 +222,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 1
+        assert response.json()['count'] == 1
         args = {
             'tg_id': 124,
             'chat_id': 124,
@@ -234,7 +234,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 1
+        assert response.json()['count'] == 1
         args = {
             'tg_id': 123,
             'chat_id': 123,
@@ -246,7 +246,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 0
+        assert response.json()['count'] == 0
         args = {
             'tg_id': 126,
             'chat_id': 123,
@@ -258,7 +258,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 0
+        assert response.json()['count'] == 0
         args = {
             'tg_id': 123,
             'chat_id': 126,
@@ -270,7 +270,7 @@ async def test_message_group_user_count(test_db):
                               f'start_date={args["start_date"]}&'
                               f'end_date={args["end_date"]}')
         assert response.status_code == 200
-        assert response.json() == 0
+        assert response.json()['count'] == 0
 
 
 @pytest.mark.asyncio
@@ -313,4 +313,4 @@ async def test_add(test_db):
                               f'start_date={str(datetime.now()-timedelta(days=2))}&'
                               f'end_date={str(datetime.now())}')
         assert response.status_code == 200
-        assert response.json() == 4
+        assert response.json()['count'] == 4

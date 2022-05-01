@@ -7,7 +7,7 @@ from app.models import Homework
 async def create_homework(homework: Homework) -> None:
     sql = """INSERT INTO homework (owner_id , name, deadline, url)
              VALUES($1,$2,$3,$4) """
-    DB.execute(sql, homework.owner_id, homework.name,
+    await DB.execute(sql, homework.owner_id, homework.name,
                homework.deadline, homework.url)
 
 
@@ -18,7 +18,7 @@ async def check_deadline_for_group(date: datetime, chat_id: int) -> Record:
                      url
                 FROM homework
                 WHERE CURRENT_DATE <= '{date + 1}'
-                AND chat_id = $1 """
+                AND owner_id = $1 """
     return await DB.fetchrow(sql, chat_id)
 
 
