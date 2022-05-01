@@ -26,13 +26,6 @@ async def shutdown() -> None:
 
 @app.exception_handler(CommonException)
 async def common_exception_handler(request: Request, exception: CommonException):
-    del request
-    logger.error(exception.error)
-    if isinstance(exception, InternalServerError):
-        return JSONResponse(
-            status_code=exception.code,
-            content={'details': 'Internal server error'}
-        )
     return JSONResponse(
         status_code=exception.code,
         content={'details': exception.error}
