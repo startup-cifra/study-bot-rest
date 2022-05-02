@@ -22,10 +22,11 @@ async def check_deadline(date: datetime, chat_id: int) -> models.Homework:
     return models.Homework(deadline=deadline)
 
 
-# TODO: ВЫБОР выполненые. не выполненные TODO добавить в бд оценку дз
+# TODO:  добавить состояние дз
+# cur 0  не проверенная - 1-проверенная
 @homework_router.get('/homeworks/user')
-async def homeworks_check(tg_id: int) -> JSONResponse:
-    homeworks = format_records(await check_homewroks(tg_id))
+async def homeworks_check(tg_id: int, cur: int) -> JSONResponse:
+    homeworks = format_records(await check_homewroks(tg_id, cur))
     return JSONResponse(status_code=status.HTTP_200_OK, content={
         'homeworks': homeworks,
     })
