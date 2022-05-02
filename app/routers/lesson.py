@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, status
 from fastapi.responses import JSONResponse
 from app.models import Lessons
-from app.queries.lesson import add_lesson_sql, get_les_attedance, lesson_attedance_sql, lessons_for_users
+from app.queries.lesson import add_lesson_sql, get_les_attedance, lesson_attedance_sql, lessons_for_tutor, lessons_for_users
 from app.utils import format_records
 
 
@@ -46,7 +46,7 @@ async def lesson_get_for_users(chat_id: int) -> JSONResponse:
 
 
 @lessons_router.get('/lessons/tutor')
-async def lessons_for_tutor(date: str = Query(None, description="Откуда начинать формата ГГ-ММ-ДД"),
+async def lessons_get_for_tutor(date: str = Query(None, description="Откуда начинать формата ГГ-ММ-ДД"),
                             owner_id: int = Query(None, description="Id tutor"),
                             chat_id: int = Query(None, description="Группа")) -> JSONResponse:
     lessons = format_records(await lessons_for_tutor(date, owner_id, chat_id))
