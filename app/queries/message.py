@@ -2,9 +2,10 @@ from datetime import datetime
 
 from asyncpg import Record
 from app.migrations.db import DB
-from app.exceptions import BadRequest,NotFoundException
+from app.exceptions import BadRequest, NotFoundException
 
 # TODO: добавить пагинацию
+
 
 async def add_new_message(tg_id: int,
                           chat_id: int,

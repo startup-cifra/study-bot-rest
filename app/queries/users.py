@@ -25,6 +25,7 @@ async def add_user_sql(student: UserStudent) -> None:
                       student.surname, student.course, student.faculty)
 
 
+# TODO УБРАТЬ это и вставить проверку в каждую функцию, где надо
 async def check_role_sql(name: str) -> Record:
     sql = """   SELECT role
                 FROM users

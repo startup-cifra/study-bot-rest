@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Query, status, BackgroundTasks
 
 import app.queries.message as message_queries
 from app import models
@@ -10,8 +10,9 @@ message_router = APIRouter(tags=["Messages"])
 
 
 @message_router.post('/message', response_model=models.SuccessfulResponse, status_code=status.HTTP_201_CREATED)
-async def add_message(message: models.Message):
-    await message_queries.add_new_message(message.tg_id, message.chat_id, message.body, message.date)
+async def add_message(message: models.Message, background_tasks: BackgroundTasks):
+    background_tasks.add_task(message_queries.add_new_message, message.tg_id, message.chat_id, message.body,
+                              message.date)
     return models.SuccessfulResponse()
 
 
