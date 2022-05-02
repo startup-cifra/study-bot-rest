@@ -32,7 +32,7 @@ async def get_lesson_attedance(date: str = Query(None, description="Дата ф�
 # Можно сделать вывод имени преподователя
 @lessons_router.get('/lesson', response_model=list[models.LessonsOut], status_code=status.HTTP_200_OK)
 async def lesson_get_for_users(chat_id: int) -> list[models.LessonsOut]:
-    lessons = format_records(await lessons_for_users(chat_id),models.LessonsOut)
+    lessons = format_records(await lessons_for_users(chat_id, models.LessonsOut))
     return lessons
 
 
