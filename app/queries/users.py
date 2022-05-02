@@ -1,5 +1,7 @@
 import logging
-from asyncpg import Record,PostgresError
+
+from asyncpg import PostgresError, Record
+
 from app.exceptions import InternalServerError
 from app.migrations.db import DB
 from app.models import UserStudent
@@ -7,16 +9,6 @@ from app.models import UserStudent
 logger = logging.getLogger(__name__)
 
 
-async def get_user_groups(tg_id:int) -> list[Record]:
-    sql = """SELECT g.name,g.chat_id FROM groups AS g
-             JOIN users_groups AS ug 
-             ON g.chat_id = ug.chat_id 
-             WHERE ug.tg_id = $1;"""
-    try:
-        return await DB.con.fetch(sql,tg_id)
-    except PostgresError as error:
-        logger.error(error)
-        raise InternalServerError() from error
 async def add_admin_sql(name: str) -> None:
     sql = """UPDATE users
              SET role = 'tutor'
