@@ -20,10 +20,10 @@ async def add_group(chat_id: int, name: str) -> None:
         raise InternalServerError from error
 
 
-async def add_user_to_group(tg_id: int, chat_id: int) -> None:
-    sql = """INSERT INTO users_groups(tg_id, chat_id) VALUES ($1, $2)"""
+async def add_user_to_group(tg_id: int, chat_id: int, role: str) -> None:
+    sql = """INSERT INTO users_groups(tg_id, chat_id, role) VALUES ($1, $2, $3)"""
     try:
-        await DB.con.execute(sql, tg_id, chat_id)
+        await DB.con.execute(sql, tg_id, chat_id, role)
     except UniqueViolationError as error:
         logger.error(error)
         raise BadRequest('Пользователь уже состоит в группе') from error

@@ -19,7 +19,7 @@ async def add_group(group: models.Group):
                     response_model=models.SuccessfulResponse,
                     status_code=status.HTTP_201_CREATED)
 async def add_user_to_group(group: models.GroupIn, tg_id: int = Path(..., title='Telegram ID', gt=0)):
-    await group_queries.add_user_to_group(tg_id, group.chat_id)
+    await group_queries.add_user_to_group(tg_id, group.chat_id, group.role)
     return models.SuccessfulResponse()
 
 
