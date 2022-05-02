@@ -1,15 +1,21 @@
+import logging
 from datetime import datetime
-from asyncpg import Record
+from asyncpg import Record,PostgresError
+from app.exceptions import InternalServerError
 from app.migrations.db import DB
 from app.models import Lessons
 
+logger = logging.getLogger(__name__)
 
 async def add_lesson_sql(lesson: Lessons) -> None:
     sql = """INSERT INTO lesson (owner_id, chat_id, attedance, lesson_type, body, data )
              VALUES($1,$2,0,$3,$4,$5)   """
-    await DB.execute(sql, lesson.owner_id, lesson.chat_id, lesson.lesson_type,
+    try:
+        await DB.con.execute(sql, lesson.owner_id, lesson.chat_id, lesson.lesson_type,
                      lesson.body, lesson.date.replace(tzinfo=None))
-
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
 
 # получаем айди урока TODO
 async def check_lesson(date: datetime, owner_id: int):
@@ -22,8 +28,11 @@ async def lesson_attedance_sql(date: str, attedance: int, owner_id: int) -> None
                 SET attedance = $1
                 WHERE CURRENT_DATE = '{date}'
                 AND owner_id = $2"""
-    await DB.execute(sql, attedance, owner_id)
-
+    try:
+        await DB.con.execute(sql, attedance, owner_id)
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
 
 # может добавить тип урока и группу? :TODO
 async def get_les_attedance(date: str, owner_id: int) -> Record:
@@ -31,8 +40,11 @@ async def get_les_attedance(date: str, owner_id: int) -> Record:
                 FROM lesson l
                 WHERE CURRENT_DATE = '{date}'
                 AND owner_id = $1"""
-    return await DB.fetchval(sql, owner_id)
-
+    try:
+        return await DB.con.fetchval(sql, owner_id)
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
 
 async def lessons_for_users(chat_id: int) -> Record:
     sql = """ SELECT lesson_type,
@@ -40,8 +52,11 @@ async def lessons_for_users(chat_id: int) -> Record:
                      data
               FROM lesson
               WHERE chat_id = $1"""
-    return await DB.fetchrow(sql, chat_id)
-
+    try:
+        return await DB.con.fetchrow(sql, chat_id)
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
 
 async def lessons_for_tutor(date: str, owner_id: int, chat_id: int) -> Record:
     sql = f"""SELECT lesson_type,
@@ -52,4 +67,8 @@ async def lessons_for_tutor(date: str, owner_id: int, chat_id: int) -> Record:
               WHERE chat_id = $1
               AND owner_id = $2
               AND CURRENT_DATE >= '{date}'  """
-    return await DB.fetchrow(sql, chat_id, owner_id)
+    try:
+        return await DB.con.fetchrow(sql, chat_id, owner_id)
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
