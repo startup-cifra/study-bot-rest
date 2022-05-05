@@ -45,3 +45,12 @@ async def get_user_groups(tg_id: int) -> list[Record]:
     except PostgresError as error:
         logger.error(error)
         raise InternalServerError() from error
+
+
+async def remove_user_from_group(tg_id: int, chat_id: int) -> None:
+    sql = """DELETE FROM users_groups WHERE tg_id = $1 AND chat_id = $2"""
+    try:
+        await DB.con.execute(sql, tg_id, chat_id)
+    except PostgresError as error:
+        logger.error(error)
+        raise InternalServerError() from error
