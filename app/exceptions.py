@@ -6,6 +6,7 @@ from asyncpg.exceptions import PostgresError, UniqueViolationError, ForeignKeyVi
 
 logger = logging.getLogger(__name__)
 
+
 class CommonException(Exception):
     def __init__(self, code: int, error: str) -> None:
         super().__init__()
@@ -36,6 +37,7 @@ class BadRequest(CommonException):
 class ForbiddenException(CommonException):
     def __init__(self) -> None:
         super().__init__(status.HTTP_403_FORBIDDEN, "Запрещено")
+
 
 def db_exception_handler(func):
     def handle_exceptions(*args,**kwargs):

@@ -5,7 +5,6 @@ create table if not exists users
     tg_id       integer
         constraint customer_pk
             primary key,
-    role roles,
     username text unique,
     name text,
     surname text,
@@ -18,6 +17,7 @@ create table if not exists homework
         constraint homework_pk
             primary key,
     owner_id integer references users(tg_id),
+    chat_id integer references groups(chat_id),
     name text not null,
     deadline timestamp,
     url text
@@ -26,7 +26,7 @@ create table if not exists users_hw
 (
     tg_id integer references users(tg_id),
     hw_id integer references homework(id) on delete cascade,
-    mark integer not null,
+    mark integer ,
   	unique(tg_id,hw_id)
 );
 create table if not exists groups
@@ -40,6 +40,7 @@ create table if not exists users_groups
 (
 	tg_id integer references users(tg_id),
 	chat_id integer references groups(chat_id),
+    role roles,
 	unique(tg_id,chat_id)	
 );
 create table if not exists message

@@ -34,17 +34,19 @@ async def get_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID
     messages = format_records(messages, models.MessageOut)
     return messages
 
+
 @message_router.get('/message/group/count', response_model=models.MessageCountOut, status_code=status.HTTP_200_OK)
-async def count_group_messages(chat_id: int = Query(None,title="ID чата",gt=0),
+async def count_group_messages(chat_id: int = Query(None, title="ID чата", gt=0),
                                start_date: datetime = Query(None, title='Начальная дата поиска'),
                                end_date: datetime = Query(None, title='Конечная дата поиска')):
     number = await message_queries.count_group_messages(chat_id, start_date, end_date)
     return models.MessageCountOut(count=number)
 
-@message_router.get('/message/group/user/count',response_model=models.MessageCountOut, status_code=status.HTTP_200_OK)
-async def count_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID',gt=0),
-                                     chat_id: int = Query(None, title='ID чата',gt=0),
-                                     start_date: datetime = Query(None, title='Начальная дата поиска'),
-                                     end_date: datetime = Query(None, title='Конечная дата поиска')):
+
+@message_router.get('/message/group/user/count', response_model=models.MessageCountOut, status_code=status.HTTP_200_OK)
+async def count_group_messages_by_user(tg_id: int = Query(None, title='Telegram ID', gt=0),
+                                       chat_id: int = Query(None, title='ID чата', gt=0),
+                                       start_date: datetime = Query(None, title='Начальная дата поиска'),
+                                       end_date: datetime = Query(None, title='Конечная дата поиска')):
     number = await message_queries.count_group_messages_by_user(tg_id, chat_id, start_date, end_date)
     return models.MessageCountOut(count=number)

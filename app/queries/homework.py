@@ -1,37 +1,57 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from asyncpg import Record
 from app.migrations.db import DB
 from app.models import Homework
 
 
 async def create_homework(homework: Homework) -> None:
-    sql = """INSERT INTO homework (owner_id , name, deadline, url)
-             VALUES($1,$2,$3,$4) """
-    await DB.execute(sql, homework.owner_id, homework.name,
-                     homework.deadline, homework.url)
+    sql = """INSERT INTO homework (owner_id , name, deadline, url, chat_id)
+             VALUES($1,$2,$3,$4,$5)
+             RETURNING id """
+    hw_id = await DB.fetchval(sql, homework.owner_id, homework.name,
+                              homework.deadline.replace(tzinfo=None), homework.url, homework.chat_id)
+    sql = """INSERT INTO users_hw (tg_id, hw_id)
+             SELECT ug.tg_id,
+                    $1
+             FROM users_groups ug
+             WHERE ug."role" = 'student'
+                AND ug.chat_id = $2 """
+    await DB.execute(sql, hw_id, homework.chat_id)
 
 
-# TODO пофиксить запрос и почекать
 async def check_deadline_for_group(date: datetime, chat_id: int) -> Record:
-    sql = f"""SELECT deadline,
-                     name,
-                     url
-                FROM homework
-                WHERE CURRENT_DATE <= '{date + 1}'
-                AND owner_id = $1 """
-    return await DB.fetchrow(sql, chat_id)
+    date = date + timedelta(days=1)
+    sql = """SELECT deadline,
+                 name,
+                 url
+             FROM homework
+             WHERE deadline <= $2
+               AND chat_id = $1 """
+    return await DB.fetch(sql, chat_id, date.replace(tzinfo=None))
 
 
-async def check_homewroks(tg_id: int, cur: int) -> Record:
-    check_h = 'Null'
+# TODO поправить f-строку
+async def check_homewroks(tg_id: int, cur: bool) -> Record:
     if cur:
-        check_h = 'Not' + ' ' + check_h
-    sql = f"""select  h.name, 
-		      h.owner_id,
-		        h.deadline ,
-		        h.url,
-		        uh.mark
-            from homework h 
-	        left outer join users_hw uh on h.id = uh.hw_id  where uh.mark IS {check_h} and uh.tg_id =$1 """
-    return await DB.fetchrow(sql, tg_id)
-    
+        sql = """SELECT h.name,
+                   h.owner_id,
+                   h.deadline,
+                   h.url,
+                   uh.mark
+              FROM homework h
+              JOIN users_hw uh
+              ON h.id = uh.hw_id
+              WHERE uh.tg_id = $1
+                AND uh.mark IS NOT NULL"""
+    else:
+        sql = """SELECT h.name,
+                   h.owner_id,
+                   h.deadline,
+                   h.url,
+                   uh.mark
+              FROM homework h
+              JOIN users_hw uh
+              ON h.id = uh.hw_id
+              WHERE uh.tg_id = $1
+                AND uh.mark IS  NULL"""
+    return await DB.fetch(sql, tg_id)
