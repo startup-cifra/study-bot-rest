@@ -1,5 +1,13 @@
 from datetime import datetime
+from enum import Enum
+
 from pydantic import BaseModel, Field
+
+
+
+class Roles(str, Enum):
+    STUDENT: str = 'student'
+    TUTOR: str = 'tutor'
 
 
 class SuccessfulResponse(BaseModel):
@@ -8,13 +16,13 @@ class SuccessfulResponse(BaseModel):
 
 class Message(BaseModel):
     tg_id: int = Field(..., title='Telegram ID', gt=0)
-    chat_id: int = Field(..., title='ID чата', gt=0)
+    chat_id: int = Field(..., title='ID чата')
     body: str = Field(..., title='Тело сообщения')
     date: datetime = Field(..., title='Время отправки сообщения')
 
 
 class MessageOut(BaseModel):
-    tg_id: int = Field(None, title='Telegram ID')
+    tg_id: int = Field(None, title='Telegram ID', gt=0)
     chat_id: int = Field(None, title='ID чата')
     body: str = Field(..., title='Тело сообщения')
     date: datetime = Field(..., title='Время отправки сообщения')
@@ -24,8 +32,19 @@ class MessageCountOut(BaseModel):
     count: int = Field(None, title='Кол-во сообщений')
 
 
+class Group(BaseModel):
+    name: str = Field(..., title='Имя группы')
+    chat_id: int = Field(..., title='ID чата')
+
+
+class GroupIn(BaseModel):
+    chat_id: int = Field(..., title='ID чата')
+    role: Roles = Field(..., title='Роль')
+
+
 class GroupOut(BaseModel):
     name: str = Field(None, title='Имя группы')
+    role: str = Field(None, title='Роль')
     chat_id: int = Field(None, title='ID чата')
 
 
@@ -66,7 +85,7 @@ class LessonsOut(BaseModel):
 
 
 class Homework(BaseModel):
-    owner_id: int = Field(None, title='ID создателя')
+    owner_id: int = Field(None, title='ID создателя', gt=0)
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
     url: str = Field(None, title='Ссылка на материалы')

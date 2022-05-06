@@ -1,7 +1,6 @@
 import logging
 
 from fastapi import status
-from asyncpg.exceptions import PostgresError, UniqueViolationError, ForeignKeyViolationError
 
 
 logger = logging.getLogger(__name__)
@@ -37,21 +36,3 @@ class BadRequest(CommonException):
 class ForbiddenException(CommonException):
     def __init__(self) -> None:
         super().__init__(status.HTTP_403_FORBIDDEN, "Запрещено")
-
-
-def db_exception_handler(func):
-    def handle_exceptions(*args,**kwargs):
-        try:
-            return func(*args,**kwargs)
-        except UniqueViolationError as error:
-            logger.error(error)
-            return False
-        except ForeignKeyViolationError as error:
-            logger.error(error)
-            return False
-        except PostgresError as error:
-            logger.error(error)
-            raise InternalServerError() from error
-        except Exception as error:
-            logger.error(error)
-    return handle_exceptions

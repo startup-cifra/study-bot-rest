@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime
-from asyncpg import Record
+from asyncpg import Record,PostgresError
+from app.exceptions import InternalServerError
 from app.migrations.db import DB
 from app.models import Lessons
 
+logger = logging.getLogger(__name__)
 
 async def add_lesson_sql(lesson: Lessons) -> None:
     sql = """INSERT INTO lesson (owner_id, chat_id, attedance, lesson_type, body, data )
