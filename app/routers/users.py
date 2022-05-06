@@ -7,14 +7,14 @@ from app.queries.users import add_user_sql, get_user_groups, check_role_sql
 users_router = APIRouter(tags=["Users"])
 
 
-@users_router.get('/user/groups', response_model=list[models.GroupOut], status_code=status.HTTP_200_OK)
+@users_router.get('/user/groups', response_model=list[models.GroupOut])
 async def get_groups(tg_id: int = Query(None, title='Telegram ID', gt=0)) -> list[models.GroupOut]:
     groups = await get_user_groups(tg_id)
     groups = format_records(groups, models.GroupOut)
     return groups
 
 
-@users_router.post('/user', response_model=models.SuccessfulResponse, status_code=status.HTTP_200_OK)
+@users_router.post('/user', response_model=models.SuccessfulResponse, status_code=status.HTTP_201_CREATED)
 async def add_user(student: models.UserStudent) -> models.SuccessfulResponse:
     await add_user_sql(student)
     return models.SuccessfulResponse()

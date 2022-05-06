@@ -14,14 +14,14 @@ async def add_homework(homework: models.Homework, background_tasks: BackgroundTa
     return models.SuccessfulResponse()
 
 
-@homework_router.get('/homeworks/deadline', response_model=list[models.HomeworkOut], status_code=status.HTTP_200_OK)
+@homework_router.get('/homeworks/deadline', response_model=list[models.HomeworkOut])
 async def check_deadline(date: str = Query(None, title='Дата формата ГГ-ММ-ДД, +1 ОТ ТЕКУЩЕЙ'),
                          chat_id: int = Query(None, title='чат ID')) -> list[models.HomeworkOut]:
     deadline = format_records(await check_deadline_for_group(date, chat_id), models.HomeworkOut)
     return deadline
 
 
-@homework_router.get('/homeworks/user', response_model=list[models.СheckHomeworkOut], status_code=status.HTTP_200_OK)
+@homework_router.get('/homeworks/user', response_model=list[models.СheckHomeworkOut])
 async def homeworks_check(tg_id: int, cur: bool) -> list[models.СheckHomeworkOut]:
     homeworks = format_records(await check_homewroks(tg_id, cur), models.СheckHomeworkOut)
     return homeworks

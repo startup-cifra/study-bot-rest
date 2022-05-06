@@ -9,13 +9,13 @@ from app.utils import format_records
 lessons_router = APIRouter(tags=["Lessons"])
 
 
-@lessons_router.post('/lessons', response_model=models.SuccessfulResponse, status_code=status.HTTP_200_OK)
+@lessons_router.post('/lessons', response_model=models.SuccessfulResponse, status_code=status.HTTP_201_CREATED)
 async def add_lesson(lesson: models.Lessons, background_tasks: BackgroundTasks) -> models.SuccessfulResponse:
     background_tasks.add_task(add_lesson_sql, lesson)
     return models.SuccessfulResponse()
 
 
-@lessons_router.post('/lessons/attedance', response_model=models.SuccessfulResponse, status_code=status.HTTP_200_OK)
+@lessons_router.post('/lessons/attedance', response_model=models.SuccessfulResponse)
 async def lesson_attedance(date: datetime = Query(None, description="Дата формата ГГ-ММ-ДД"),
                            owner_id: int = Query(None, description="Id tutor"),
                            attedance: int = Query(None, description="Посещаемость")) -> models.SuccessfulResponse:
@@ -24,7 +24,7 @@ async def lesson_attedance(date: datetime = Query(None, description="Дата ф
     return models.SuccessfulResponse()
 
 
-@lessons_router.get('/lessons/attedance', response_model=models.AttendanceOut, status_code=status.HTTP_200_OK)
+@lessons_router.get('/lessons/attedance', response_model=models.AttendanceOut)
 async def get_lesson_attedance(date: datetime = Query(None, description="Дата формата ГГ-ММ-ДД"),
                                owner_id: int = Query(None, description="Id tutor")) -> models.AttendanceOut:
     attedance = await get_les_attedance(date.date(), owner_id)
@@ -32,13 +32,13 @@ async def get_lesson_attedance(date: datetime = Query(None, description="Дат�
 
 
 # Можно сделать вывод имени преподователя
-@lessons_router.get('/lesson', response_model=list[models.LessonsOutUsers], status_code=status.HTTP_200_OK)
+@lessons_router.get('/lesson', response_model=list[models.LessonsOutUsers])
 async def lesson_get_for_users(chat_id: int, date: datetime) -> list[models.LessonsOutUsers]:
     lessons = format_records(await lessons_for_users(chat_id, date), models.LessonsOutUsers)
     return lessons
 
 
-@lessons_router.get('/lessons/tutor', response_model=list[models.LessonsOut], status_code=status.HTTP_200_OK)
+@lessons_router.get('/lessons/tutor', response_model=list[models.LessonsOut])
 async def lessons_for_tutor(date_start: datetime = Query(None, description="Откуда начинать "),
                             date_end: datetime = Query(None, description="Где заканчиваем"),
                             owner_id: int = Query(None, description="Id tutor"),
