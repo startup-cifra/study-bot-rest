@@ -4,6 +4,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
+
 class Roles(str, Enum):
     STUDENT: str = 'student'
     TUTOR: str = 'tutor'
@@ -68,14 +69,38 @@ class Lessons(BaseModel):
     body: str
     date: datetime = Field(None, title='Время отправки сообщения')
 
+
+class LessonsOutUsers(BaseModel):
+    body: str = Field(None, title='Тема урока')
+    data: datetime = Field(None, title='Дата')
+    lesson_type: str = Field(None, title='Тип урока')
+    owner_id: str = Field(None, title=' tutor_id')
+
+
 class LessonsOut(BaseModel):
     body: str = Field(None, title='Тема урока')
     attendance: int = Field(None, title='Посещаемость')
-    data: str = Field(None, title='Дата')
+    data: datetime = Field(None, title='Дата')
     lesson_type: str = Field(None, title='Тип урока')
+
 
 class Homework(BaseModel):
     owner_id: int = Field(None, title='ID создателя', gt=0)
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
-    url: str = Field(None,title='Ссылка на материалы')
+    url: str = Field(None, title='Ссылка на материалы')
+    chat_id: int = Field(None, title='ID группы')
+
+
+class HomeworkOut(BaseModel):
+    name: str = Field(None, title='Имя домашней работы')
+    deadline: datetime = Field(None, title='Время окончания отправ. дз')
+    url: str = Field(None, title='Ссылка на материалы')
+
+
+class СheckHomeworkOut(BaseModel):
+    owner_id: int = Field(None, title='ID создателя')
+    name: str = Field(None, title='Имя домашней работы')
+    deadline: datetime = Field(None, title='Время окончания отправ. дз')
+    url: str = Field(None, title='Ссылка на материалы')
+    mark: int = Field(None, title='Оценка дз')

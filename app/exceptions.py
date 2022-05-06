@@ -5,6 +5,7 @@ from fastapi import status
 
 logger = logging.getLogger(__name__)
 
+
 class CommonException(Exception):
     def __init__(self, code: int, error: str) -> None:
         super().__init__()

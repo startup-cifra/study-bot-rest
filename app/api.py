@@ -5,11 +5,11 @@ from fastapi.responses import JSONResponse
 
 from app.exceptions import CommonException
 from app.migrations.db import DB
-from app.routers.groups import groups_router
-from app.routers.homework import homework_router
-from app.routers.lesson import lessons_router
 from app.routers.message import message_router
 from app.routers.users import users_router
+from app.routers.lesson import lessons_router
+from app.routers.homework import homework_router
+from app.routers.groups import groups_router
 
 logger = logging.getLogger(__name__)
 
