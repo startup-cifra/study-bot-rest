@@ -1,14 +1,17 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
 
+
 class SuccessfulResponse(BaseModel):
     details: str = Field('Выполнено', title='Статус операции')
 
+
 class Message(BaseModel):
-    tg_id: int = Field(..., title='Telegram ID',gt=0)
-    chat_id: int = Field(...,title='ID чата',gt=0)
+    tg_id: int = Field(..., title='Telegram ID', gt=0)
+    chat_id: int = Field(..., title='ID чата', gt=0)
     body: str = Field(..., title='Тело сообщения')
     date: datetime = Field(..., title='Время отправки сообщения')
+
 
 class MessageOut(BaseModel):
     tg_id: int = Field(None, title='Telegram ID')
@@ -16,15 +19,19 @@ class MessageOut(BaseModel):
     body: str = Field(..., title='Тело сообщения')
     date: datetime = Field(..., title='Время отправки сообщения')
 
+
 class MessageCountOut(BaseModel):
-    count: int = Field(None,title='Кол-во сообщений')
+    count: int = Field(None, title='Кол-во сообщений')
+
 
 class GroupOut(BaseModel):
-    name: str = Field(None,title='Имя группы')
+    name: str = Field(None, title='Имя группы')
     chat_id: int = Field(None, title='ID чата')
 
+
 class AttendanceOut(BaseModel):
-    attendance: int = Field(...,title='Посещаемость')
+    attendance: int = Field(..., title='Посещаемость')
+
 
 class UserStudent(BaseModel):
     user_name: str = Field(None, title=' Имя в телеграмме')
@@ -43,14 +50,38 @@ class Lessons(BaseModel):
     body: str
     date: datetime = Field(None, title='Время отправки сообщения')
 
+
+class LessonsOutUsers(BaseModel):
+    body: str = Field(None, title='Тема урока')
+    data: datetime = Field(None, title='Дата')
+    lesson_type: str = Field(None, title='Тип урока')
+    owner_id: str = Field(None, title=' tutor_id')
+
+
 class LessonsOut(BaseModel):
     body: str = Field(None, title='Тема урока')
     attendance: int = Field(None, title='Посещаемость')
-    data: str = Field(None, title='Дата')
+    data: datetime = Field(None, title='Дата')
     lesson_type: str = Field(None, title='Тип урока')
+
 
 class Homework(BaseModel):
     owner_id: int = Field(None, title='ID создателя')
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
-    url: str = Field(None,title='Ссылка на материалы')
+    url: str = Field(None, title='Ссылка на материалы')
+    chat_id: int = Field(None, title='ID группы')
+
+
+class HomeworkOut(BaseModel):
+    name: str = Field(None, title='Имя домашней работы')
+    deadline: datetime = Field(None, title='Время окончания отправ. дз')
+    url: str = Field(None, title='Ссылка на материалы')
+
+
+class СheckHomeworkOut(BaseModel):
+    owner_id: int = Field(None, title='ID создателя')
+    name: str = Field(None, title='Имя домашней работы')
+    deadline: datetime = Field(None, title='Время окончания отправ. дз')
+    url: str = Field(None, title='Ссылка на материалы')
+    mark: int = Field(None, title='Оценка дз')
