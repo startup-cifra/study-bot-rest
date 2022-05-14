@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from app import models
-from app.utils import format_records
 from app.queries.users import add_user_sql, check_role_sql
 
 users_router = APIRouter(tags=["Users"])
