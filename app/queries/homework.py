@@ -1,8 +1,5 @@
-import logging
 from datetime import datetime, timedelta
-from asyncpg import Record
-from datetime import datetime
-from asyncpg import Record,PostgresError
+from asyncpg import Record, PostgresError
 from app.exceptions import InternalServerError
 from app.migrations.db import DB
 from app.models import Homework

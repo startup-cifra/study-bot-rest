@@ -1,7 +1,10 @@
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from starlette.exceptions import HTTPException
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.responses import PlainTextResponse
+from fastapi.exceptions import RequestValidationError
+from app.exceptions import CommonException
 from app.migrations.db import DB
 from app.routers.message import message_router
 from app.routers.users import users_router
@@ -38,8 +41,14 @@ async def common_exception_handler(request: Request, exception: Exception):
     )
 
 
-@app.exception_handler(HTTPException)
-async def http_exception(request: Request, exc: HTTPException):
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    logger.info(f"Status code {exc.code} Message: {exc.error}")
+    return PlainTextResponse(exc, status_code=400)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception(request, exc):
     logger.info(f"Status code {exc.status_code} Message: {exc.detail}")
     return JSONResponse(
         content={"detail": exc.detail},
@@ -57,7 +66,6 @@ async def log_requst(request: Request, call_next):
     process_time = (time.perf_counter() - start_time)
     formatted_process_time = '{0:.5f}'.format(process_time)
     logger.info(f"Completed_in = {formatted_process_time}s")
-    # logger.info(f"Status_code = { response.status_code}")
     return response
 
 

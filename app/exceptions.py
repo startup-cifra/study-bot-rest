@@ -1,9 +1,4 @@
-import logging
-
 from fastapi import status
-
-
-logger = logging.getLogger(__name__)
 
 
 class CommonException(Exception):
