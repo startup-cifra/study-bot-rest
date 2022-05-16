@@ -30,3 +30,18 @@ async def check_role_sql(tg_id: int, chat_id: int) -> Record:
     except ForeignKeyViolationError as er:
         raise NotFoundException('Пользователь или группа не существует') from er
     return role
+
+
+async def get_permission_level_for_hw(tg_id: int, hw_id: int) -> str:
+    sql = """SELECT ug.role 
+           FROM users_groups ug 
+           RIGHT JOIN users_hw uh 
+           ON ug.tg_id = uh.tg_id
+           WHERE uh.hw_id = $1"""
+    try:
+        role = await DB.con.fetchval(sql, tg_id, hw_id)
+        if role is None:
+            raise BadRequest(error='Пользователя или группы не существует') from None
+    except ForeignKeyViolationError as er:
+        raise NotFoundException('Пользователь или группа не существует') from er
+    return role

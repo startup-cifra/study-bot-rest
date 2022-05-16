@@ -1,9 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, Query, status
-from app.utils import format_records
 
 from app import models
-from app.queries.homework import check_deadline_for_group, check_homewroks, create_homework
-
+from app.queries.homework import check_deadline_for_group, check_homewroks, create_homework, set_mark
+from app.queries.users import get_permission_level_for_hw
+from app.utils import format_records
 
 homework_router = APIRouter(tags=["Homeworks"])
 
@@ -25,3 +25,10 @@ async def check_deadline(date: str = Query(None, title='Дата формата 
 async def homeworks_check(tg_id: int, cur: bool) -> list[models.СheckHomeworkOut]:
     homeworks = format_records(await check_homewroks(tg_id, cur), models.СheckHomeworkOut)
     return homeworks
+
+
+@homework_router.put('/homeworks/user/mark', response_model=models.SuccessfulResponse)
+async def set_mark_hw(mark: models.HomeworkMark):
+    role = await get_permission_level_for_hw(mark.tg_id, mark.hw_id)
+    await set_mark(mark.tg_id, mark.hw_id, mark.mark, role)
+    return models.SuccessfulResponse()

@@ -4,7 +4,6 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-
 class Roles(str, Enum):
     STUDENT: str = 'student'
     TUTOR: str = 'tutor'
@@ -92,13 +91,21 @@ class Homework(BaseModel):
     chat_id: int = Field(None, title='ID группы')
 
 
+class HomeworkMark(BaseModel):
+    tg_id: int = Field(..., title='Telegram ID', gt=0)
+    hw_id: int = Field(..., title='Идентификатор дз', gt=0)
+    mark: int = Field(..., title='Оценка за дз')
+
+
 class HomeworkOut(BaseModel):
+    hw_id: int = Field(None, title='Идентификатор дз')
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
     url: str = Field(None, title='Ссылка на материалы')
 
 
 class СheckHomeworkOut(BaseModel):
+    hw_id: int = Field(None, title='Идентификатор дз')
     owner_id: int = Field(None, title='ID создателя')
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
