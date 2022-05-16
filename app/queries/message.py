@@ -17,7 +17,7 @@ async def add_new_message(tg_id: int,
              WHERE tg_id = $1 AND chat_id = $2"""
     try:
         res = await DB.con.fetch(sql, tg_id, chat_id)
-        if not res:  # TODO  сменить на явное None
+        if not res:
             raise BadRequest('Пользователь не принадлежит группе')
     except PostgresError as error:
         raise InternalServerError() from error

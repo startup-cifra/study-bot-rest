@@ -44,7 +44,10 @@ async def common_exception_handler(request: Request, exception: Exception):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     logger.info(f"Status code {exc.code} Message: {exc.error}")
-    return PlainTextResponse(exc, status_code=400)
+    return JSONResponse(
+        status_code=exc.code,
+        content={'details': exc.error}
+    )
 
 
 @app.exception_handler(StarletteHTTPException)
