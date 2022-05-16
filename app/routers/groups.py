@@ -24,16 +24,14 @@ async def add_user_to_group(group: models.GroupIn, tg_id: int = Path(..., title=
 
 
 @groups_router.delete('/user/{tg_id}/group',
-                      response_model=models.SuccessfulResponse,
-                      status_code=status.HTTP_200_OK)
+                      response_model=models.SuccessfulResponse)
 async def remove_user_from_group(group: models.GroupOut, tg_id: int = Path(..., title='Telegram ID', gt=0)):
     await group_queries.remove_user_from_group(tg_id, group.chat_id)
     return models.SuccessfulResponse()
 
 
 @groups_router.get('/user/{tg_id}/group',
-                   response_model=list[models.GroupOut],
-                   status_code=status.HTTP_200_OK)
+                   response_model=list[models.GroupOut])
 async def get_user_groups(tg_id: int = Path(..., title='Telegram ID', gt=0)):
     groups = await group_queries.get_user_groups(tg_id)
     groups = format_records(groups, models.GroupOut)
