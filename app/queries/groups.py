@@ -1,4 +1,5 @@
 from asyncpg import Record
+
 from app.migrations.db import DB
 
 
@@ -20,6 +21,17 @@ async def get_user_groups(tg_id: int) -> list[Record]:
              ON g.chat_id = ug.chat_id
              WHERE ug.tg_id = $1;"""
     return await DB.con.fetch(sql, tg_id)
+
+
+async def get_users_in_group(chat_id: int) -> list[Record]:
+    sql = """SELECT u.tg_id,
+                    u.name,
+                    u.surname
+             FROM users u 
+             JOIN users_groups ug 
+             ON u.tg_id = ug.tg_id
+             WHERE ug.chat_id = $1"""
+    return await DB.con.fetch(sql, chat_id)
 
 
 async def remove_user_from_group(tg_id: int, chat_id: int) -> None:
