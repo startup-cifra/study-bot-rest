@@ -7,6 +7,8 @@ from app.migrations.db import DB
 from app.models import Homework
 
 
+# TODO: требуются статистические функции по типу, частотная характеристика по домашке, средний балл, топ людей и прочее
+
 async def create_homework(homework: Homework) -> None:
     sql = """INSERT INTO homework (owner_id , name, deadline, url, chat_id)
                  VALUES($1,$2,$3,$4,$5)
@@ -54,7 +56,7 @@ async def get_all_owned_homeworks_in_chat(tg_id: int, chat_id: int):
     return await DB.con.fetch(sql, tg_id, chat_id)
 
 
-async def check_homewroks(tg_id: int, cur: bool) -> Record:
+async def check_homewroks(tg_id: int, cur: bool) -> list[Record]:
     if cur:
         sql = """SELECT h.name,
                        h.owner_id,
@@ -77,7 +79,7 @@ async def check_homewroks(tg_id: int, cur: bool) -> Record:
                  ON h.id = uh.hw_id
                  WHERE uh.tg_id = $1
                    AND uh.mark IS  NULL"""
-        return await DB.con.fetch(sql, tg_id)
+    return await DB.con.fetch(sql, tg_id)
 
 
 async def set_mark(tg_id: int, hw_id: int, mark: int, role: str) -> None:
