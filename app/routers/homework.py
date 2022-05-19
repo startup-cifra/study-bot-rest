@@ -53,3 +53,10 @@ async def set_mark_hw(mark: models.HomeworkMark):
     role = await get_permission_level_for_hw(mark.owner_id)
     await homework_queries.set_mark(mark.tg_id, mark.hw_id, mark.mark, role)
     return models.SuccessfulResponse()
+
+
+@homework_router.get('/homework', response_model=list[models.HomeworkUserOut])
+async def get_hw_progress(hw_id: int, owner_id: int) -> list[models.HomeworkUserOut]:
+    role = await get_permission_level_for_hw(owner_id)
+    homeworks = format_records(await homework_queries.get_hw_people_progress(hw_id, role), models.HomeworkUserOut)
+    return homeworks

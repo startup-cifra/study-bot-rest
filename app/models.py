@@ -105,6 +105,12 @@ class HomeworkOut(BaseModel):
     url: str = Field(None, title='Ссылка на материалы')
 
 
+class HomeworkUserOut(BaseModel):
+    name: str = Field(None, title='Имя ученика')
+    surname: str = Field(None, title='Фамилия ученика')
+    mark: str = Field(None, title='Оценка дз')
+
+
 class СheckHomeworkOut(BaseModel):
     hw_id: int = Field(None, title='Идентификатор дз')
     owner_id: int = Field(None, title='ID создателя')

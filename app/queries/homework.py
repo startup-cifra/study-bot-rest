@@ -104,3 +104,16 @@ async def get_users_in_group_with_hw(chat_id: int, hw_id: int) -> list[Record]:
              WHERE ug.chat_id = $1
                AND uh.hw_id = $2"""
     return await DB.con.fetch(sql, chat_id, hw_id)
+
+
+async def get_hw_people_progress(hw_id: int, role: str) -> list[Record]:
+    if role != 'tutor':
+        raise ForbiddenException()
+    sql = """SELECT u.name,
+                    u.surname,
+                    uh.mark
+             FROM users u
+             JOIN users_hw uh 
+             ON u.tg_id = uh.tg_id
+             WHERE uh.hw_id = $1"""
+    return await DB.con.fetch(sql, hw_id)
