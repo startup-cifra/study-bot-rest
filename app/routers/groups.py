@@ -36,3 +36,8 @@ async def get_user_groups(tg_id: int = Path(..., title='Telegram ID', gt=0)):
     groups = await group_queries.get_user_groups(tg_id)
     groups = format_records(groups, models.GroupOut)
     return groups
+
+@groups_router.get('/group/users', response_model=list[models.UserStudent])
+async def get_users_in_group(chat_id: int):
+    users = await group_queries.get_users_in_group(chat_id)
+    return users

@@ -4,7 +4,6 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-
 class Roles(str, Enum):
     STUDENT: str = 'student'
     TUTOR: str = 'tutor'
@@ -56,7 +55,7 @@ class UserStudent(BaseModel):
     user_name: str = Field(None, title=' Имя в телеграмме')
     # role : int = Field(None, title='Роль в курсе')
     tg_id: int = Field(None, title='Telegram ID', gt=0)
-    name_student: str = Field(None, title='Имя ученика')
+    name: str = Field(None, title='Имя ученика')
     surname: str = Field(None, title='Фамилия ученика')
     course: int = Field(None, title=' курс ')
     faculty: str = Field(None, title='Факультет')
@@ -92,13 +91,28 @@ class Homework(BaseModel):
     chat_id: int = Field(None, title='ID группы')
 
 
+class HomeworkMark(BaseModel):
+    owner_id: int = Field(..., title='ID создателя', gt=0)
+    tg_id: int = Field(..., title='Telegram ID', gt=0)
+    hw_id: int = Field(..., title='Идентификатор дз', gt=0)
+    mark: int = Field(..., title='Оценка за дз')
+
+
 class HomeworkOut(BaseModel):
+    hw_id: int = Field(None, title='Идентификатор дз')
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
     url: str = Field(None, title='Ссылка на материалы')
 
 
+class HomeworkUserOut(BaseModel):
+    name: str = Field(None, title='Имя ученика')
+    surname: str = Field(None, title='Фамилия ученика')
+    mark: str = Field(None, title='Оценка дз')
+
+
 class СheckHomeworkOut(BaseModel):
+    hw_id: int = Field(None, title='Идентификатор дз')
     owner_id: int = Field(None, title='ID создателя')
     name: str = Field(None, title='Имя домашней работы')
     deadline: datetime = Field(None, title='Время окончания отправ. дз')
